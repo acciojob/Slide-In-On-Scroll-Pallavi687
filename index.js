@@ -2,39 +2,20 @@
 // We will understand all of this later in the course.
 // DO NOT MODIFY THIS FILE
 
-const images = document.querySelectorAll(".slide-in");
+const express = require('express');
+const path = require('path');
 
-function debounce(func, wait = 20, immediate = true) {
-  var timeout;
-  return function () {
-    var context = this,
-      args = arguments;
-    var later = function () {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
+const app = express();
 
-function slideIn() {
-  images.forEach((image) => {
-    const slideInAt =
-      window.scrollY + window.innerHeight - image.height / 2;
-    const imageBottom = image.offsetTop + image.height;
-    const isHalfShown = slideInAt > image.offsetTop;
-    const isNotScrolledPast = window.scrollY < imageBottom;
-    if (isHalfShown && isNotScrolledPast) {
-      image.classList.add("active");
-    } else {
-      image.classList.remove("active");
-    }
-  });
-}
+app.use(express.static(__dirname))
 
-const onScroll = debounce(slideIn);
-
-window.addEventListener("scroll", onScroll);
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/main.html'));
+});
+//your code here
+app.post('/add', (req, res) => {
+  const {a,b} = req.body;
+  res.status(200).send(a+b);
+  // res.sendFile(path.join(__dirname + '/main.html'));
+});
+module.exports = app;
